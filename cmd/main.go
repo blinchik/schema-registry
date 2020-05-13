@@ -11,8 +11,6 @@ import (
 	sr "github.com/blinchik-io/go-schema/registry"
 )
 
-// Firstschema asdsd
-const Firstschema = `{"name":"test_topic11","type":"record", "fields":[{"name":"user","type":"string","size":12},{"name":"password","size":12,"type":"string"},{"name":"number","size":10,"type":["null","double"], "default": null }]}`
 const dockerHost = "192.168.99.100"
 const schemaPort = "8081"
 
@@ -25,8 +23,19 @@ func main() {
 	delete := flag.Bool("delete", false, "delete")
 	re := flag.Bool("r", false, "regex")
 	add := flag.Bool("add", false, "add")
+	count := flag.Bool("count", false, "count")
 
 	flag.Parse()
+
+	if *count {
+
+		subjects := sr.ListSchema(dockerHost, schemaPort, os.Args[2])
+
+		fmt.Println("\ncount: ", len(subjects))
+
+		return
+
+	}
 
 	if *add {
 

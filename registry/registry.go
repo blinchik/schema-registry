@@ -74,7 +74,7 @@ func deleteSchema(host, schemaPort, schemaName string, wg *sync.WaitGroup) {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("\nDelete: ", schemaName, "\n")
+	fmt.Printf("%s %s %s\n", "[Delete]", "---> ", schemaName)
 
 	wg.Done()
 
@@ -137,12 +137,12 @@ func postSchema(idx int, schemaName, host, schemaPort string, schemas [][]byte, 
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("%s %s %s\n", "[error]", "---> schema name: ", schemaName)
+		fmt.Printf("%s %s %s\n", "[error]", "--->  ", schemaName)
 		bodyString := string(bodyBytes)
 		fmt.Println(bodyString)
 	} else {
 
-		fmt.Printf("%s %s %s\n", "[ok]", "---> schema name: ", schemaName)
+		fmt.Printf("%s %s %s\n", "[ok]", "--->  ", schemaName)
 
 	}
 
@@ -165,24 +165,6 @@ func AddSchema(schemas [][]byte, schemaNames []string, host, schemaPort string) 
 	wg.Wait()
 
 }
-
-// func GetSchema(topic string, Type string) string {
-
-// 	url := fmt.Sprintf("http://%s:%s/subjects/%s-%s/versions/latest", schemaAddress, schemaPort, topic, Type)
-// 	resp, err := http.Get(url)
-// 	if err != nil {
-// 		// handle err
-// 	}
-// 	defer resp.Body.Close()
-
-// 	bodyBytes, err := ioutil.ReadAll(resp.Header.Values())
-// 	bodyString := string(bodyBytes)
-
-// 	schemaID := resp.Header.Values("id")
-// 	fmt.Println("+++++++ schema ID ", schemaID)
-
-// 	return fixSchema(bodyString)
-// }
 
 func FixSchema(schema string) string {
 
