@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func FetcbLatest(host, schemaPort, schemaName string) string {
+func FetchLatest(host, schemaPort, schemaName string) string {
 
 	url := fmt.Sprintf("http://%s:%s/subjects/%s/versions/latest", host, schemaPort, schemaName)
 
