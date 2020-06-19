@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	sr "github.com/blinchik-io/go-schema/registry"
+	sr "github.com/blinchik/go-schema/registry"
 )
 
 const dockerHost = "192.168.99.100"

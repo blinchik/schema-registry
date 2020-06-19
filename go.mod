@@ -1,4 +1,4 @@
-module github.com/blinchik-io/go-schema
+module github.com/blinchik/go-schema
 
 go 1.14
 
