@@ -1,7 +1,7 @@
 package main
 
 import (
-	sr "github.com/blinchik-io/go-schema/registry"
+	sr "github.com/blinchik/go-schema/registry"
 )
 
 // Firstschema asdsd
