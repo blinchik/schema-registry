@@ -11,9 +11,9 @@ import (
 	"sync"
 )
 
-func FetchLatest(host, schemaPort, schemaName string) string {
+func FetchLatest(host, schemaPort, schemaName string, protocol string) string {
 
-	url := fmt.Sprintf("http://%s:%s/subjects/%s/versions/latest", host, schemaPort, schemaName)
+	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions/latest",protocol, host, schemaPort, schemaName)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -27,9 +27,9 @@ func FetchLatest(host, schemaPort, schemaName string) string {
 
 }
 
-func DeleteSchemaSpecfic(host, schemaPort, schemaName string) {
+func DeleteSchemaSpecfic(host, schemaPort, schemaName string, protocol string) {
 
-	url := fmt.Sprintf("http://%s:%s/subjects/%s", host, schemaPort, schemaName)
+	url := fmt.Sprintf("%s://%s:%s/subjects/%s",protocol, host, schemaPort, schemaName)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -60,9 +60,9 @@ func DeleteSchemaList(host, schemaPort string, schemaList []string) {
 
 }
 
-func deleteSchema(host, schemaPort, schemaName string, wg *sync.WaitGroup) {
+func deleteSchema(host, schemaPort, schemaName string, wg *sync.WaitGroup,protocol string) {
 
-	url := fmt.Sprintf("http://%s:%s/subjects/%s", host, schemaPort, schemaName)
+	url := fmt.Sprintf("%s://%s:%s/subjects/%s",protocol, host, schemaPort, schemaName)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -80,12 +80,12 @@ func deleteSchema(host, schemaPort, schemaName string, wg *sync.WaitGroup) {
 
 }
 
-func ListSchema(host, schemaPort, regex string) []string {
+func ListSchema(host, schemaPort, regex string,protocol string) []string {
 
 	var stringList []string
 	var schemaList []string
 
-	url := fmt.Sprintf("http://%s:%s/subjects", host, schemaPort)
+	url := fmt.Sprintf("%s://%s:%s/subjects",protocol, host, schemaPort)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -112,13 +112,13 @@ func ListSchema(host, schemaPort, regex string) []string {
 
 }
 
-func postSchema(idx int, schemaName, host, schemaPort string, schemas [][]byte, wg *sync.WaitGroup) {
+func postSchema(idx int, schemaName, host, schemaPort string, schemas [][]byte, wg *sync.WaitGroup,protocol string) {
 
 	data := string(json.RawMessage(schemas[idx]))
 
 	body := strings.NewReader(data)
 
-	url := fmt.Sprintf("http://%s:%s/subjects/%s/versions", host, schemaPort, schemaName)
+	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions",protocol, host, schemaPort, schemaName)
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		fmt.Println(err)
