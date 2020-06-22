@@ -45,14 +45,14 @@ func DeleteSchemaSpecfic(host, schemaPort, schemaName string, protocol string) {
 
 }
 
-func DeleteSchemaList(host, schemaPort string, schemaList []string) {
+func DeleteSchemaList(host, schemaPort string, schemaList []string, protocol string) {
 
 	wg := &sync.WaitGroup{}
 
 	for _, v := range schemaList {
 		wg.Add(1)
 
-		go deleteSchema(host, schemaPort, v, wg)
+		go deleteSchema(host, schemaPort, v, wg, protocol)
 
 	}
 
