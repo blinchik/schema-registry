@@ -150,7 +150,7 @@ func postSchema(idx int, schemaName, host, schemaPort string, schemas [][]byte, 
 
 }
 
-func AddSchema(schemas [][]byte, schemaNames []string, host, schemaPort string) {
+func AddSchema(schemas [][]byte, schemaNames []string, host, schemaPort string, protocol string) {
 
 	fmt.Println("")
 	wg := &sync.WaitGroup{}
@@ -158,7 +158,7 @@ func AddSchema(schemas [][]byte, schemaNames []string, host, schemaPort string) 
 	for idx, v := range schemaNames {
 		wg.Add(1)
 
-		go postSchema(idx, v, host, schemaPort, schemas, wg)
+		go postSchema(idx, v, host, schemaPort, schemas, wg, protocol)
 
 	}
 
