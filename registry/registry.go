@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+//SchemaConfig struct defines the schema configuration
 type SchemaConfig struct {
 	Name     string `json:"name"`
 	Address  string `json:"address"`
@@ -17,6 +18,7 @@ type SchemaConfig struct {
 	Protocol string `json:"protocol"`
 }
 
+// Schema struct defines the structure of returned schema from Schema Registry
 type Schema struct {
 	Subject string `json:"subject"`
 	Version int    `json:"version"`
@@ -24,7 +26,7 @@ type Schema struct {
 	Schema  string `json:"schema"`
 }
 
-// PostSchema will post schema to the Schema Registry
+//PostSchema will post schema to the Schema Registry
 func PostSchema(schema string, config SchemaConfig) []byte {
 
 	var objmap map[string]interface{}
@@ -67,7 +69,7 @@ func PostSchema(schema string, config SchemaConfig) []byte {
 	return bodyBytes
 }
 
-// GetSchemaLatest get the latest schema from Schema Registry and unmarshl it
+//GetSchemaLatest get the latest schema from Schema Registry and unmarshl it
 func GetSchemaLatest(schema Schema, config SchemaConfig) (string, int) {
 
 	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions/latest", config.Protocol, config.Address, config.Port, config.Name)
