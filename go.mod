@@ -1,10 +1,10 @@
-module schema-registry
+module github.com/blinchik/schema-registry
 
 go 1.17
 
-require (
-	github.com/blinchik/go-schema v0.0.6
-	github.com/linkedin/goavro v2.1.0+incompatible
-)
+require github.com/linkedin/goavro v2.1.0+incompatible
 
-require github.com/golang/snappy v0.0.1 // indirect
+require (
+	github.com/golang/snappy v0.0.4 // indirect
+	gopkg.in/linkedin/goavro.v1 v1.0.5 // indirect
+)
