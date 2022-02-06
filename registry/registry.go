@@ -12,7 +12,6 @@ import (
 
 //SchemaConfig struct defines the schema configuration
 type SchemaConfig struct {
-	Name     string `json:"name"`
 	Address  string `json:"address"`
 	Port     string `json:"port"`
 	Protocol string `json:"protocol"`
@@ -27,7 +26,7 @@ type Schema struct {
 }
 
 //PostSchema will post schema to the Schema Registry
-func PostSchema(schema string, config SchemaConfig) []byte {
+func PostSchema(schema, name string, config SchemaConfig) []byte {
 
 	var objmap map[string]interface{}
 	err := json.Unmarshal([]byte(schema), &objmap)
@@ -44,7 +43,7 @@ func PostSchema(schema string, config SchemaConfig) []byte {
 	}
 
 	body := strings.NewReader(string(out))
-	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions", config.Protocol, config.Address, config.Port, config.Name)
+	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions", config.Protocol, config.Address, config.Port, name)
 
 	req, err := http.NewRequest("POST", url, body)
 
@@ -70,9 +69,9 @@ func PostSchema(schema string, config SchemaConfig) []byte {
 }
 
 //GetSchemaLatest get the latest schema from Schema Registry and unmarshl it
-func GetSchemaLatest(schema Schema, config SchemaConfig) (string, int) {
+func GetSchemaLatest(name string, schema Schema, config SchemaConfig) (string, int) {
 
-	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions/latest", config.Protocol, config.Address, config.Port, config.Name)
+	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions/latest", config.Protocol, config.Address, config.Port, name)
 
 	resp, err := http.Get(url)
 	if err != nil {
