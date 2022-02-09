@@ -2,17 +2,16 @@ package avro
 
 import (
 	"encoding/binary"
-	"log"
 
 	"github.com/linkedin/goavro"
 )
 
 // SerializeMessageConfluentAvro will serialize a Kafka message according to supplied Avro Schema
-func SerializeMessageConfluentAvro(avroSchema string, schemaID int, data []byte) []byte {
+func SerializeMessageConfluentAvro(avroSchema string, schemaID int, data []byte) (confluentSchemaData []byte, err error) {
 
 	codec, err := goavro.NewCodec(avroSchema)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	var binaryMsg []byte
@@ -27,38 +26,38 @@ func SerializeMessageConfluentAvro(avroSchema string, schemaID int, data []byte)
 
 	native, _, err := codec.NativeFromTextual(data)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	binaryData, err := codec.BinaryFromNative(nil, native)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	ConfluentSchemaData := append(binaryMsg, binaryData...)
+	confluentSchemaData = append(binaryMsg, binaryData...)
 
-	return ConfluentSchemaData
+	return confluentSchemaData, err
 
 }
 
 // DeserializeMessageConfluentAvro will deserialize an Avro Kafka message according to supplied Avro Schema
-func DeserializeMessageConfluentAvro(avroSchema string, schemaID int, data []byte) []byte {
+func DeserializeMessageConfluentAvro(avroSchema string, schemaID int, data []byte) (textual []byte, err error) {
 
 	codec, err := goavro.NewCodec(avroSchema)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	// remove the magic bytes from data
 	native, _, err := codec.NativeFromBinary(data[5:])
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	textual, err := codec.TextualFromNative(nil, native)
+	textual, err = codec.TextualFromNative(nil, native)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	return textual
+	return textual, err
 }

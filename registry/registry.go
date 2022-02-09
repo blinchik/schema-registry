@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,86 +24,79 @@ type schema struct {
 }
 
 //PostSchema will post schema to the Schema Registry
-func PostSchema(schema, name string, config SchemaConfig) []byte {
+func PostSchema(schema, name string, config SchemaConfig) (respBody []byte, err error) {
 
 	var objmap map[string]interface{}
-	err := json.Unmarshal([]byte(schema), &objmap)
+
+	err = json.Unmarshal([]byte(schema), &objmap)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	objmap["schema"] = schema
 
 	out, err := json.Marshal(objmap)
-
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	body := strings.NewReader(string(out))
 	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions", config.Protocol, config.Address, config.Port, name)
 
 	req, err := http.NewRequest("POST", url, body)
-
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	req.Header.Set("Content-Type", "application/vnd.schemaregistry.v1+json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	defer resp.Body.Close()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	respBody, err = io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	return bodyBytes
+	return respBody, err
 }
 
 //GetSchemaLatest get the latest schema from Schema Registry and unmarshl it
-func GetSchemaLatest(name string, config SchemaConfig) (string, int) {
-
-	var sch schema
+func GetSchemaLatest(name string, config SchemaConfig) (sch schema, err error) {
 
 	url := fmt.Sprintf("%s://%s:%s/subjects/%s/versions/latest", config.Protocol, config.Address, config.Port, name)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 	defer resp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	err = json.Unmarshal(bodyBytes, &sch)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	schemaStr, err := json.Marshal(sch.Schema)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	schemaStrUnquote, err := strconv.Unquote(string(schemaStr))
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	sch.Schema = schemaStrUnquote
 
-	id := sch.ID
-
-	return schemaStrUnquote, id
+	return sch, err
 }
